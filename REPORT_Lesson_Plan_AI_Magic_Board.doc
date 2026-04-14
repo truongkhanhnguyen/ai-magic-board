@@ -1,0 +1,189 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+    <meta charset="utf-8">
+    <title>LESSON PLAN</title>
+    <style>
+        body { font-family: "Times New Roman", Times, serif; font-size: 14pt; }
+        h1 { font-size: 16pt; font-weight: bold; text-align: center; }
+        h2 { font-size: 14pt; font-weight: bold; }
+        h3 { font-size: 14pt; font-weight: bold; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; margin-bottom: 20px; }
+        table, th, td { border: 1px solid black; }
+        th, td { padding: 8px; text-align: left; vertical-align: top; }
+        .no-border table, .no-border td { border: none !important; }
+        .bold { font-weight: bold; }
+        .indent { margin-left: 20px; }
+    </style>
+</head>
+<body>
+
+    <table style="border: none; width: 100%;">
+        <tr>
+            <td style="border: none; padding: 5px;">Preparing date: .......................................</td>
+            <td style="border: none; padding: 5px; text-align: right;">Teaching date: .......................................</td>
+        </tr>
+        <tr>
+            <td style="border: none; padding: 5px;">Week: .......................................</td>
+            <td style="border: none; padding: 5px; text-align: right;">Period: .......................................</td>
+        </tr>
+    </table>
+
+    <h1>UNIT: SEMESTER 2 REVIEW<br>Lesson: Grammar Review - Technology Integration (AI Magic Board)</h1>
+
+    <h2>I. OBJECTIVES</h2>
+    <p>By the end of the lesson, Ss will be able to:</p>
+    
+    <p class="bold">1.1. Language knowledge and skills</p>
+    <ul>
+        <li>Consolidate and correctly apply 4 key grammatical themes of Semester 2:
+            <ul>
+                <li><b>Reported Speech:</b> Shifting tenses, changing pronouns, and updating time/place expressions.</li>
+                <li><b>Past Continuous vs Past Simple:</b> Using <i>When</i> and <i>While</i>.</li>
+                <li><b>Comparisons:</b> Transforming comparative forms into <i>not as... as</i> structures.</li>
+                <li><b>Distance:</b> Using <i>What is the distance...</i> and <i>How far is it...</i>.</li>
+            </ul>
+        </li>
+        <li>Improve writing accuracy through real-time sentence transformation exercises.</li>
+    </ul>
+
+    <p class="bold">1.2. Competences</p>
+    <ul>
+        <li><b>Critical Thinking:</b> Analyze sentence structures to apply complex grammar rules correctly.</li>
+        <li><b>Digital Literacy:</b> Interact confidently with AI-based educational tools.</li>
+        <li><b>Collaboration & Problem Solving:</b> Work in pairs/groups to brainstorm answers.</li>
+    </ul>
+
+    <p class="bold">1.3. Attributes</p>
+    <ul>
+        <li>Foster engagement and active participation via gamified learning (<b>AI Magic Board</b>).</li>
+        <li>Promote a growth mindset through constructive AI feedback.</li>
+    </ul>
+
+    <h2>II. TEACHING AIDS AND LEARNING MATERIALS</h2>
+    <p><b>1. Teacher’s aids:</b> Projector / Interactive Whiteboard, Laptop with internet connection, <b>AI Magic Board Application</b> (Custom-built platform featuring digital slides, gamification, and AI automated assessment).</p>
+    <p><b>2. Students’ aids:</b> Student’s workbook, notebook, pens, mini-whiteboards (optional).</p>
+
+    <h2>III. ASSESSMENT EVIDENCE</h2>
+    <table>
+        <tr>
+            <th>Performance Tasks</th>
+            <th>Performance Products</th>
+            <th>Assessment Tools</th>
+        </tr>
+        <tr>
+            <td>Participate in guided theory revision using interactive slides.</td>
+            <td>Verbal responses & active engagement.</td>
+            <td>T’s observation.</td>
+        </tr>
+        <tr>
+            <td>Rewrite sentences based on 4 grammar modules on the AI Board.</td>
+            <td>Written answers typed directly into the AI Magic Board.</td>
+            <td><b>AI Automated Assessment</b> (Instant correct/incorrect feedback).</td>
+        </tr>
+        <tr>
+            <td>Discussing why the AI accepted or rejected a submission.</td>
+            <td>Arguments/Explanations in class.</td>
+            <td>T’s feedback / Peers’ feedback.</td>
+        </tr>
+    </table>
+
+    <h2>IV. PROCEDURES</h2>
+    
+    <p class="bold">A. Warm-up (5’)</p>
+    <p>a) <b>Objective:</b> Introduce the AI learning tool and create a highly engaging atmosphere.</p>
+    <p>b) <b>Content:</b> Exploring the "Main Menu" of the AI Magic Board.</p>
+    <p>c) <b>Expected outcomes:</b> Students understand the lesson scope (4 Modules) and are excited.</p>
+    <p>d) <b>Organization of the activity:</b></p>
+    <table>
+        <tr>
+            <th style="width: 50%;">TEACHER’S ACTIVITIES</th>
+            <th style="width: 50%;">STUDENTS’ ACTIVITIES</th>
+        </tr>
+        <tr>
+            <td>
+                - Open the <b>AI Magic Board</b> application via projector.<br>
+                - Introduce the concept: <i>"Today, your work will be judged by an AI Boss! We have 4 challenges to conquer."</i><br>
+                - Show the visually appealing Main Menu and let students choose which module to tackle first.
+            </td>
+            <td>
+                - Look at the smart board and observe the 4 modules.<br>
+                - Vote on the module they want to review first (e.g., Reported Speech or When/While).
+            </td>
+        </tr>
+    </table>
+
+    <p class="bold">B. New Lesson: Grammar Revision (15’)</p>
+    <p>a) <b>Objective:</b> Recall and reinforce the grammatical structures before testing.</p>
+    <p>b) <b>Content:</b> Navigating through the interactive slides for the chosen module(s).</p>
+    <p>c) <b>Expected outcomes:</b> Students grasp the formulas (e.g., 3 Golden Rules of Reported Speech).</p>
+    <p>d) <b>Organization of the activity:</b></p>
+    <table>
+        <tr>
+            <th style="width: 50%;">TEACHER’S ACTIVITIES</th>
+            <th style="width: 50%;">STUDENTS’ ACTIVITIES</th>
+        </tr>
+        <tr>
+            <td>
+                - Use the keyboard to navigate through the interactive theory slides.<br>
+                - Explain key sections (e.g., The differences between <i>When</i> and <i>While</i>).<br>
+                - Elicit answers for the "Quick-test" slide formats.
+            </td>
+            <td>
+                - Take notes of the important formulas in their notebooks.<br>
+                - Call out answers during the quick-test slides.<br>
+                - Ask clarifying questions if any rule is forgotten.
+            </td>
+        </tr>
+    </table>
+
+    <p class="bold">C. Practice: The AI Challenge (20’)</p>
+    <p>a) <b>Objective:</b> Apply theoretical knowledge into sentence transformation exercises.</p>
+    <p>b) <b>Content:</b> Using the AI board to type and check rewritten sentences.</p>
+    <p>c) <b>Expected outcomes:</b> Students successfully rewrite sentences; learn immediately from AI hints.</p>
+    <p>d) <b>Organization of the activity:</b></p>
+    <table>
+        <tr>
+            <th style="width: 50%;">TEACHER’S ACTIVITIES</th>
+            <th style="width: 50%;">STUDENTS’ ACTIVITIES</th>
+        </tr>
+        <tr>
+            <td>
+                - Click "CHALLENGE ACCEPTED!" to enter the AI Board.<br>
+                - Provide a sentence from the Question Bank.<br>
+                - Type the student's answer into the giant input box and click <b>"AI CHECK"</b>.<br>
+                - <b>If Correct:</b> Celebrate together with the screen's Confetti effect.<br>
+                - <b>If Incorrect:</b> Use the AI's feedback and the screen shake effect to discuss why it was wrong. Invite another student to correct it.
+            </td>
+            <td>
+                - Work individually or in pairs to rewrite the sentences on paper or mini-whiteboards.<br>
+                - Volunteer to stand up and dictate the answer to the Teacher.<br>
+                - Analyze the AI's feedback if the answer is rejected.<br>
+                - Re-attempt structural corrections.
+            </td>
+        </tr>
+    </table>
+
+    <p class="bold">D. Consolidation & Homework (5’)</p>
+    <p>a) <b>Objective:</b> Summarize the lesson and assign self-study tasks.</p>
+    <p>b) <b>Content:</b> Wrap up the 4 modules and assign workbook exercises.</p>
+    <p>c) <b>Expected outcomes:</b> Students remember the core takeaway from the AI interaction.</p>
+    <p>d) <b>Organization of the activity:</b></p>
+    <table>
+        <tr>
+            <th style="width: 50%;">TEACHER’S ACTIVITIES</th>
+            <th style="width: 50%;">STUDENTS’ ACTIVITIES</th>
+        </tr>
+        <tr>
+            <td>
+                - Summarize which grammatical points were the hardest to get past the AI.<br>
+                - Assign homework: Complete the remaining sentences from the Semester 2 revision outline on paper.
+            </td>
+            <td>
+                - Note down the homework assignment.<br>
+                - Share their favorite part of the AI Magic Board experience.
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
