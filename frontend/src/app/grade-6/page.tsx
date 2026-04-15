@@ -2,11 +2,49 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, XCircle, Volume2, BookOpen, Type, PenLine } from "lucide-react";
+import confetti from 'canvas-confetti';
+import { ArrowLeft, Volume2, BookOpen, Type, PenLine } from "lucide-react";
 import { grade6MCPronunciation, grade6MCGrammar, grade6WordForms, grade6Rewriting } from "../../data/grade6Data";
 import type { MultipleChoiceQuestion, WordFormQuestion } from "../../data/grade6Data";
 import Grade6GrammarSlides, { grade6Slides } from "../../components/grade-6/Grade6GrammarSlides";
 import WordFormMode from "../../components/grade-6/WordFormMode";
+
+const MC_CSS = `
+  @keyframes mc-run-across { 0% { left: -150px; transform: scaleX(-1); } 48% { left: 110vw; transform: scaleX(-1); } 50% { left: 110vw; transform: scaleX(1); } 98% { left: -150px; transform: scaleX(1); } 100% { left: -150px; transform: scaleX(-1); } }
+  @keyframes mc-run-reverse { 0% { right: -150px; transform: scaleX(1); } 48% { right: 110vw; transform: scaleX(1); } 50% { right: 110vw; transform: scaleX(-1); } 98% { right: -150px; transform: scaleX(-1); } 100% { right: -150px; transform: scaleX(1); } }
+  @keyframes mc-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+  @keyframes mc-pop-in { 0% { opacity: 0; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1.05); } 70% { transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes mc-shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-20px); } 20%, 40%, 60%, 80% { transform: translateX(20px); } }
+  @keyframes mc-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes mc-shockwave { 0% { transform: scale(0.5); opacity: 0.8; } 100% { transform: scale(2.5); border-width: 0px; opacity: 0; } }
+`;
+
+const playMCSound = (type: 'correct' | 'incorrect') => {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    if (type === 'correct') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+      osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+      osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.5);
+    } else {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.3);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.3);
+    }
+  } catch { /* ignore */ }
+};
 
 type SectionId = "pronunciation" | "grammar" | "word-form" | "rewriting";
 type Mode = "theory" | "menu" | SectionId;
@@ -70,135 +108,185 @@ const SECTIONS: Section[] = [
   },
 ];
 
-// --- Multiple Choice Engine ---
+// --- Multiple Choice Engine (Full-screen bright mode) ---
 function MultipleChoiceEngine({
   data,
   onExit,
-  accentColor,
 }: {
   data: MultipleChoiceQuestion[];
   onExit: () => void;
-  accentColor: string;
+  accentColor?: string;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{ isCorrect: boolean; text: string } | null>(null);
-  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [feedback, setFeedback] = useState<'pending' | 'correct' | 'incorrect'>('pending');
+  const [feedbackText, setFeedbackText] = useState('');
+  const [shakeKey, setShakeKey] = useState(0);
 
   const current = data[currentIndex];
 
   const handleSelect = (key: string) => {
-    if (isEvaluating || selectedAnswer) return;
+    if (selectedAnswer) return;
     setSelectedAnswer(key);
-    setIsEvaluating(true);
-    setTimeout(() => {
-      const isCorrect = key === current.correctAnswer;
-      setFeedback({
-        isCorrect,
-        text: isCorrect
-          ? `Đỉnh chóp! Chính xác 100%. ${current.explanation}`
-          : `Sai rồi bé ơi! Đáp án đúng là ${current.correctAnswer}. ${current.explanation}`,
-      });
-      setIsEvaluating(false);
-    }, 600);
+    const isCorrect = key === current.correctAnswer;
+    if (isCorrect) {
+      playMCSound('correct');
+      setFeedback('correct');
+      setFeedbackText(`Đỉnh chóp luôn bé ơi! 🎯 ${current.explanation}`);
+      const end = Date.now() + 3000;
+      const frame = () => {
+        confetti({ particleCount: 8, angle: 60, spread: 60, origin: { x: 0, y: 0.8 }, colors: ['#6a1cf6', '#4af8e3', '#ac8eff'] });
+        confetti({ particleCount: 8, angle: 120, spread: 60, origin: { x: 1, y: 0.8 }, colors: ['#6a1cf6', '#4af8e3', '#ac8eff'] });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      };
+      frame();
+    } else {
+      playMCSound('incorrect');
+      setFeedback('incorrect');
+      setFeedbackText(`Hơi trật xíu rồi! 💦 Đáp án đúng là ${current.correctAnswer}. ${current.explanation}`);
+      setShakeKey(prev => prev + 1);
+    }
   };
 
   const handleNext = () => {
     if (currentIndex < data.length - 1) {
-      setCurrentIndex((p) => p + 1);
+      setCurrentIndex(p => p + 1);
       setSelectedAnswer(null);
-      setFeedback(null);
+      setFeedback('pending');
+      setFeedbackText('');
     } else {
       onExit();
     }
   };
 
+  const bgClass = feedback === 'incorrect' ? 'bg-[#fff0f3]' : 'bg-[#fdf3ff]';
+  const modalClass = feedback === 'correct'
+    ? 'bg-[#E0FCF8]/95 border-[8px] border-[#4af8e3] shadow-[0_40px_150px_rgba(74,248,227,0.6)]'
+    : 'bg-[#FFF0F3]/95 border-[8px] border-[#f74b6d] shadow-[0_40px_150px_rgba(247,75,109,0.6)]';
+  const modalAnim = feedback === 'correct'
+    ? 'mc-pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+    : 'mc-shake 0.5s cubic-bezier(.36,.07,.19,.97) forwards';
+
   return (
-    <div className="relative z-10 flex-grow flex flex-col max-w-5xl mx-auto w-full pt-6">
-      {/* Back + Progress */}
-      <div className="flex items-center gap-4 mb-8">
+    <div
+      className={`fixed inset-0 z-50 w-full min-h-screen flex flex-col items-center justify-center p-8 font-sans transition-colors duration-500 ${bgClass}`}
+      style={{ backgroundImage: 'radial-gradient(circle at 15% 50%, rgba(106, 28, 246, 0.08) 0%, transparent 50%), radial-gradient(circle at 85% 30%, rgba(172, 142, 255, 0.12) 0%, transparent 50%)' }}
+    >
+      <style dangerouslySetInnerHTML={{ __html: MC_CSS }} />
+
+      {/* Top bar */}
+      <div className="absolute top-10 left-10 right-10 z-[60] flex items-center justify-between pointer-events-none">
         <button
           onClick={onExit}
-          className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors group min-h-[44px] px-3"
+          className="pointer-events-auto flex items-center gap-2 h-[4.5rem] px-6 bg-white/90 backdrop-blur-sm text-[#6a1cf6] font-bold rounded-2xl border-2 border-[#e5d5ff] hover:bg-white hover:border-[#6a1cf6] transition-all shadow-md"
         >
-          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          <span className="font-medium">Quay lại</span>
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Menu
         </button>
-        <div className="flex-grow bg-slate-700/60 rounded-full h-2">
-          <div
-            className={`h-2 rounded-full transition-all duration-500 ${accentColor}`}
-            style={{ width: `${((currentIndex + 1) / data.length) * 100}%` }}
-          />
-        </div>
-        <span className="text-slate-400 text-sm font-medium shrink-0">
-          {currentIndex + 1}/{data.length}
+        <span className="bg-white/80 backdrop-blur-sm text-[#6a1cf6] border-2 border-[#e5d5ff] font-bold rounded-2xl px-6 py-3 shadow-md">
+          {currentIndex + 1} / {data.length}
         </span>
       </div>
 
-      {/* Question Card */}
-      <div className="bg-slate-800/70 rounded-3xl border border-slate-700/60 p-8 md:p-12 shadow-2xl backdrop-blur-xl mb-6 flex-grow flex flex-col justify-center">
-        <p className="text-4xl md:text-5xl font-bold leading-snug text-slate-100 mb-10">
-          {current.question}
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Running 🤖🐕 */}
+      <div className="absolute bottom-[6vh] left-[-150px] flex items-end gap-[60px] opacity-80 pointer-events-none z-[5]" style={{ animation: 'mc-run-across 12s linear infinite' }}>
+        <div className="text-[5rem] drop-shadow-xl" style={{ animation: 'mc-bounce 0.4s ease-in-out infinite alternate' }}>🤖</div>
+        <div className="text-[5rem] drop-shadow-xl" style={{ animation: 'mc-bounce 0.3s ease-in-out infinite alternate' }}>🐕</div>
+      </div>
+      {/* Running 👽🐱 */}
+      <div className="absolute top-[8vh] right-[-150px] flex items-end gap-[60px] opacity-80 pointer-events-none z-[5]" style={{ animation: 'mc-run-reverse 14s linear infinite' }}>
+        <div className="text-[5rem] drop-shadow-xl" style={{ animation: 'mc-bounce 0.35s ease-in-out infinite alternate' }}>👽</div>
+        <div className="text-[5rem] drop-shadow-xl" style={{ animation: 'mc-bounce 0.25s ease-in-out infinite alternate' }}>🐱</div>
+      </div>
+
+      {/* Question */}
+      <main key={currentIndex} className="z-10 w-full flex flex-col items-center gap-12 mt-0" style={{ animation: 'mc-fade 0.6s forwards' }}>
+        <div className="text-center w-[95%] max-w-[1400px]">
+          <h1 className="text-[#38274c] text-[3.4rem] font-bold leading-[1.3]" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+            {current.question}
+          </h1>
+        </div>
+
+        {/* Options grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-[95%] max-w-[1400px]">
           {Object.entries(current.options).map(([key, value]) => {
             const isSelected = selectedAnswer === key;
             const isCorrectKey = key === current.correctAnswer;
-            let style = "border-slate-600 bg-slate-700/50 hover:border-slate-400 hover:bg-slate-700";
-            if (feedback) {
-              if (isCorrectKey) style = "border-emerald-500 bg-emerald-900/30 text-emerald-200";
-              else if (isSelected && !isCorrectKey) style = "border-rose-500 bg-rose-900/30 text-rose-200";
+            let borderColor = '#e5d5ff';
+            let bgColor = 'rgba(255,255,255,0.85)';
+            let textColor = '#2d1b3f';
+            if (selectedAnswer) {
+              if (isCorrectKey) { borderColor = '#4af8e3'; bgColor = 'rgba(224,252,248,0.95)'; textColor = '#00463f'; }
+              else if (isSelected) { borderColor = '#f74b6d'; bgColor = 'rgba(255,240,243,0.95)'; textColor = '#510017'; }
             }
             return (
               <button
                 key={key}
                 disabled={!!selectedAnswer}
                 onClick={() => handleSelect(key)}
-                className={`relative flex items-center gap-4 p-5 rounded-2xl border-2 text-left transition-all duration-250 text-xl font-medium min-h-[64px] ${style} ${!selectedAnswer ? "hover:shadow-lg" : ""}`}
+                className="relative flex items-center gap-5 p-7 rounded-[2rem] border-[3px] text-left transition-all duration-300 text-2xl font-semibold min-h-[80px] bg-white/85 backdrop-blur-sm hover:scale-[1.02] hover:shadow-xl disabled:cursor-default"
+                style={{ borderColor, backgroundColor: bgColor, color: textColor, boxShadow: '0 8px 30px -8px rgba(106,28,246,0.15)' }}
               >
-                <span className="w-10 h-10 rounded-full bg-slate-900/60 flex items-center justify-center font-bold text-lg shrink-0">
+                <span className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shrink-0 border-2" style={{ borderColor, color: textColor }}>
                   {key}
                 </span>
-                <span className="leading-snug">{value}</span>
-                {feedback && isCorrectKey && (
-                  <CheckCircle2 className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-emerald-400" />
-                )}
-                {feedback && isSelected && !isCorrectKey && (
-                  <XCircle className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-rose-400" />
-                )}
+                <span className="leading-snug flex-grow">{value}</span>
+                {selectedAnswer && isCorrectKey && <span className="text-3xl shrink-0">✅</span>}
+                {selectedAnswer && isSelected && !isCorrectKey && <span className="text-3xl shrink-0">❌</span>}
               </button>
             );
           })}
         </div>
-      </div>
+      </main>
 
-      {/* Feedback */}
-      <div
-        className={`transition-all duration-400 overflow-hidden ${feedback ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}`}
-      >
-        {feedback && (
+      {/* Big popup modal */}
+      {feedback !== 'pending' && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md" style={{ animation: 'mc-fade 0.3s forwards' }}>
           <div
-            className={`p-6 rounded-2xl border flex items-start gap-4 shadow-xl mb-4 ${feedback.isCorrect ? "bg-emerald-950/60 border-emerald-500/40" : "bg-rose-950/60 border-rose-500/40"}`}
+            key={feedback === 'incorrect' ? shakeKey : 'correct'}
+            className={`relative flex flex-col items-center gap-12 px-24 py-20 rounded-[5rem] w-[90vw] max-w-[1400px] text-center ${modalClass}`}
+            style={{ animation: modalAnim }}
           >
-            <div className="shrink-0 mt-0.5">
-              {feedback.isCorrect ? (
-                <CheckCircle2 className="w-7 h-7 text-emerald-400" />
-              ) : (
-                <XCircle className="w-7 h-7 text-rose-400" />
-              )}
-            </div>
-            <p className={`text-lg leading-relaxed flex-grow ${feedback.isCorrect ? "text-emerald-200" : "text-rose-200"}`}>
-              {feedback.text}
-            </p>
             <button
-              onClick={handleNext}
-              className="shrink-0 px-6 py-2 bg-slate-100 text-slate-900 font-bold rounded-full hover:bg-white transition-colors min-h-[44px]"
+              onClick={() => feedback === 'correct' ? handleNext() : setFeedback('pending')}
+              className="absolute top-10 right-10 w-20 h-20 flex items-center justify-center bg-white rounded-full text-5xl text-gray-500 hover:text-red-500 hover:bg-gray-100 transition-all shadow-xl hover:scale-110 active:scale-95"
             >
-              {currentIndex < data.length - 1 ? "Tiếp" : "Xong"}
+              ✕
+            </button>
+            <div
+              className={`absolute inset-0 rounded-[5rem] border-8 pointer-events-none ${feedback === 'correct' ? 'border-[#4af8e3]' : 'border-[#f74b6d]'}`}
+              style={{ animation: 'mc-shockwave 1s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
+            />
+            {feedback === 'correct' ? (
+              <>
+                <div className="text-[160px] leading-none animate-bounce drop-shadow-2xl">🥳</div>
+                <div className="flex flex-col gap-6 items-center">
+                  <h3 className="text-7xl font-bold text-[#00463f] tracking-wide" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>JACKPOT!</h3>
+                  <p className="text-[3rem] leading-[1.3] text-[#00655b] max-w-4xl font-medium">{feedbackText}</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-[160px] leading-none animate-pulse drop-shadow-2xl">😱</div>
+                <div className="flex flex-col gap-6 items-center">
+                  <h3 className="text-7xl font-bold text-[#510017] tracking-wide" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>Whoops!</h3>
+                  <p className="text-[3rem] leading-[1.3] text-[#a70138] max-w-4xl font-medium">{feedbackText}</p>
+                </div>
+              </>
+            )}
+            <button
+              onClick={() => feedback === 'correct' ? handleNext() : setFeedback('pending')}
+              className="mt-4 px-16 py-6 bg-white rounded-full text-3xl font-bold text-gray-700 hover:bg-gray-100 transition-colors shadow-lg border-2 border-gray-200"
+            >
+              {feedback === 'correct'
+                ? (currentIndex < data.length - 1 ? 'Câu tiếp theo ➜' : '🎉 Hoàn thành!')
+                : 'Thử lại xem nào ↺'}
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
