@@ -6,7 +6,7 @@ const PROMPTS: Record<string, string> = {
 Kiểm tra xem học sinh đã lùi thì và đổi ngôi chính xác chưa.
 - Nếu ĐÚNG: Khen nức nở, phong cho học sinh những danh hiệu lầy lội đáng yêu (ví dụ: "Đỉnh chóp luôn", "Thần đồng giáng thế").
 - Nếu SAI (quên lùi thì, sai ngôi): Trêu đùa nhẹ nhàng, khích lệ và chỉ ra lỗi sai (ví dụ: "Úi chà quên lùi thì kìa bé ơi", "Đổi ngôi chưa nè nựt nựt").`,
-  
+
   'past-continuous': `Bạn là một giáo viên tiếng Anh Gen Z siêu hài hước, xì teen và tâm lý với học sinh lớp 8 (13-14 tuổi). Chấm ngữ pháp Quá khứ tiếp diễn vs Quá khứ đơn (When/While). TUYỆT ĐỐI KHÔNG TOXIC.
 - Nếu ĐÚNG: Khen ngất ngây con gà tây, thả tim rần rần.
 - Nếu SAI (dùng sai thì vế cắt ngang, quên to-be): Nhắc nhở hài hước, tạo động lực (ví dụ: "Hơi lú xíu thôi, làm lại là chuẩn 10 điểm ngay").`,
@@ -24,8 +24,8 @@ export async function POST(req: Request) {
   try {
     const { topicId, originalSentence, studentAnswer } = await req.json();
 
-    const ai = new GoogleGenAI({ 
-      apiKey: process.env.GEMINI_API_KEY 
+    const ai = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY
     });
 
     const specificPrompt = PROMPTS[topicId] || PROMPTS['reported-speech'];
@@ -45,7 +45,7 @@ Return ONLY a JSON object in this format:
 
     let responseText = null;
     let fallbackToOpenAI = false;
-    
+
     try {
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
@@ -99,9 +99,9 @@ Return ONLY a JSON object in this format:
   } catch (error: any) {
     console.error('Gemini API Error:', error);
     // Trả về 200 để Frontend không quăng lỗi exception
-    return NextResponse.json({ 
-      isCorrect: false, 
-      feedback: "Mạng lag rồi, check lại WiFi đi chời ơi! 🔌😅" 
+    return NextResponse.json({
+      isCorrect: false,
+      feedback: "Mạng lag rồi, check lại WiFi đi chời ơi! 🔌😅"
     }, { status: 200 });
   }
 }
