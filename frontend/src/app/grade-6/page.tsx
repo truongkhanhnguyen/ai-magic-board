@@ -159,6 +159,14 @@ function MultipleChoiceEngine({
     }
   };
 
+  const handleNav = (dir: number) => {
+    const next = Math.max(0, Math.min(data.length - 1, currentIndex + dir));
+    setCurrentIndex(next);
+    setSelectedAnswer(null);
+    setFeedback('pending');
+    setFeedbackText('');
+  };
+
   const bgClass = feedback === 'incorrect' ? 'bg-[#fff0f3]' : 'bg-[#fdf3ff]';
   const modalClass = feedback === 'correct'
     ? 'bg-[#E0FCF8]/95 border-[8px] border-[#4af8e3] shadow-[0_40px_150px_rgba(74,248,227,0.6)]'
@@ -185,9 +193,26 @@ function MultipleChoiceEngine({
           </svg>
           Menu
         </button>
-        <span className="bg-white/80 backdrop-blur-sm text-[#6a1cf6] border-2 border-[#e5d5ff] font-bold rounded-2xl px-6 py-3 shadow-md">
-          {currentIndex + 1} / {data.length}
-        </span>
+
+        <div className="flex items-center gap-4 pointer-events-auto">
+          <button
+            onClick={() => handleNav(-1)}
+            disabled={currentIndex === 0}
+            className="w-[4.5rem] h-[4.5rem] bg-white/90 backdrop-blur-sm hover:bg-white text-[#6a1cf6] rounded-2xl flex items-center justify-center font-bold shadow-md border-2 border-[#e5d5ff] hover:border-[#6a1cf6] transition-all hover:scale-[1.05] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <span className="bg-white/80 backdrop-blur-sm text-[#6a1cf6] border-2 border-[#e5d5ff] font-bold rounded-2xl px-6 py-3 shadow-md">
+            {currentIndex + 1} / {data.length}
+          </span>
+          <button
+            onClick={() => handleNav(1)}
+            disabled={currentIndex === data.length - 1}
+            className="w-[4.5rem] h-[4.5rem] bg-white/90 backdrop-blur-sm hover:bg-white text-[#6a1cf6] rounded-2xl flex items-center justify-center font-bold shadow-md border-2 border-[#e5d5ff] hover:border-[#6a1cf6] transition-all hover:scale-[1.05] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" /></svg>
+          </button>
+        </div>
       </div>
 
       {/* Running 🤖🐕 */}
